@@ -2,6 +2,10 @@ import React from 'react';
 import { Target } from 'lucide-react';
 
 const JobMatch = ({ matchData }) => {
+  if (!matchData) {
+    return null;
+  }
+
   return (
     <div className="match-card">
       <h3>
@@ -9,7 +13,7 @@ const JobMatch = ({ matchData }) => {
         Job Match Analysis
       </h3>
       <div className="match-percentage">
-        <span className="match-number">{matchData.percentage}%</span>
+        <span className="match-number">{matchData.overall || matchData.percentage || 0}%</span>
         <span className="match-label">Match</span>
       </div>
       <div className="match-details">
@@ -18,20 +22,20 @@ const JobMatch = ({ matchData }) => {
           <div className="match-bar">
             <div 
               className="match-fill" 
-              style={{ width: `${matchData.skillsMatch}%` }}
+              style={{ width: `${matchData.skills || matchData.skillsMatch || 0}%` }}
             ></div>
           </div>
-          <span>{matchData.skillsMatch}%</span>
+          <span>{matchData.skills || matchData.skillsMatch || 0}%</span>
         </div>
         <div className="match-item">
           <span className="match-category">Experience</span>
           <div className="match-bar">
             <div 
               className="match-fill" 
-              style={{ width: `${matchData.experienceMatch}%` }}
+              style={{ width: `${matchData.experience || matchData.experienceMatch || 0}%` }}
             ></div>
           </div>
-          <span>{matchData.experienceMatch}%</span>
+          <span>{matchData.experience || matchData.experienceMatch || 0}%</span>
         </div>
       </div>
     </div>

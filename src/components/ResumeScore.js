@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Star, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
-const ResumeScore = ({ score }) => {
+const ResumeScore = ({ score = 0 }) => {
   const [animatedScore, setAnimatedScore] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    if (score === undefined || score === null) return;
     setIsVisible(true);
     const timer = setTimeout(() => {
       const interval = setInterval(() => {
