@@ -27,7 +27,7 @@ export const analyzeResume = async (file, jobDescription = '') => {
     },
     skillsGap: {
       missing: ['AWS', 'Docker'],
-      present: ['React', 'JavaScript', 'Node.js'],
+      matched: ['React', 'JavaScript', 'Node.js'],
       recommendations: ['Consider adding cloud platform experience']
     },
     atsOptimization: {

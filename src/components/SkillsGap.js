@@ -1,7 +1,9 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 
-const SkillsGap = ({ skillsData }) => {
+const SkillsGap = ({ skillsData = {} }) => {
+  const missing = skillsData.missing || [];
+  const matched = skillsData.matched || [];
   return (
     <div className="skills-card">
       <h3>
@@ -10,17 +12,17 @@ const SkillsGap = ({ skillsData }) => {
       </h3>
       <div className="skills-summary">
         <div className="skills-stat">
-          <span className="stat-number">{skillsData.missing.length}</span>
+          <span className="stat-number">{missing.length}</span>
           <span className="stat-label">Missing Skills</span>
         </div>
         <div className="skills-stat">
-          <span className="stat-number">{skillsData.matched.length}</span>
+          <span className="stat-number">{matched.length}</span>
           <span className="stat-label">Matched Skills</span>
         </div>
       </div>
       <div className="missing-skills">
         <h4>Top Missing Skills:</h4>
-        {skillsData.missing.slice(0, 3).map((skill, index) => (
+        {missing.slice(0, 3).map((skill, index) => (
           <span key={index} className="missing-skill">{skill}</span>
         ))}\n      </div>
     </div>
