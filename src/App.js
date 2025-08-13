@@ -103,6 +103,17 @@ const AppContent = () => {
 };
 
 function App() {
+  if (!publishableKey) {
+    return (
+      <div className="App">
+        <div className="error-message">
+          <h2>Configuration Error</h2>
+          <p>Missing Clerk publishable key. Please check your environment variables.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ClerkProvider publishableKey={publishableKey}>
       <AppContent />
