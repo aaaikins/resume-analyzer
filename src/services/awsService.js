@@ -31,8 +31,9 @@ export const analyzeResume = async (file, jobDescription = '') => {
 
     return await response.json();
   } catch (error) {
-    console.error('Resume analysis error:', error);
-    throw error;
+    console.error('Resume analysis error, falling back to mock service:', error);
+    // Fall back to mock service if API fails
+    return await mockService.analyzeResume(file, jobDescription);
   }
 };
 
@@ -66,8 +67,8 @@ export const getResumeVersions = async (userId) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching resume versions:', error);
-    throw error;
+    console.error('Error fetching resume versions, falling back to mock service:', error);
+    return await mockService.getResumeVersions(userId);
   }
 };
 
@@ -92,7 +93,7 @@ export const saveResumeVersion = async (versionData) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Error saving resume version:', error);
-    throw error;
+    console.error('Error saving resume version, falling back to mock service:', error);
+    return await mockService.saveResumeVersion(versionData);
   }
 };

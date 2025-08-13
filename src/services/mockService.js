@@ -18,6 +18,23 @@ export const analyzeResume = async (file, jobDescription = '') => {
       { text: 'team collaboration', confidence: 0.76 },
       { text: 'problem solving', confidence: 0.82 }
     ],
+    resumeScore: 85,
+    jobMatch: {
+      overall: 78,
+      skills: 82,
+      experience: 75,
+      education: 80
+    },
+    skillsGap: {
+      missing: ['AWS', 'Docker'],
+      present: ['React', 'JavaScript', 'Node.js'],
+      recommendations: ['Consider adding cloud platform experience']
+    },
+    atsOptimization: {
+      score: 72,
+      issues: ['Missing keywords', 'Format could be improved'],
+      suggestions: ['Add more industry keywords', 'Use standard section headers']
+    },
     score: 85,
     suggestions: [
       'Add more quantifiable achievements',
@@ -31,5 +48,7 @@ export const getResumeVersions = async (userId) => {
 };
 
 export const saveResumeVersion = async (versionData) => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
   return { success: true, id: Date.now() };
 };

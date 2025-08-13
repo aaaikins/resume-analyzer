@@ -13,6 +13,10 @@ const AnalysisResults = ({ data }) => {
     return () => clearTimeout(timer);
   }, []);
 
+  if (!data) {
+    return null;
+  }
+
   const getSentimentIcon = (sentiment) => {
     switch (sentiment) {
       case 'POSITIVE': return <TrendingUp className="sentiment-positive" />;
@@ -47,46 +51,52 @@ const AnalysisResults = ({ data }) => {
 
       {/* Original Analysis Grid */}
       <div className="results-grid">
-        <div className="result-card">
-          <h3>
-            <Heart size={20} />
-            Sentiment Analysis
-          </h3>
-          <div className={getSentimentClass(data.sentiment.sentiment)}>
-            {getSentimentIcon(data.sentiment.sentiment)}
-            <strong>{data.sentiment.sentiment}</strong>
-            <span className="confidence">
-              {Math.round(data.sentiment.confidence * 100)}% confidence
-            </span>
+        {data.sentiment && (
+          <div className="result-card">
+            <h3>
+              <Heart size={20} />
+              Sentiment Analysis
+            </h3>
+            <div className={getSentimentClass(data.sentiment.sentiment)}>
+              {getSentimentIcon(data.sentiment.sentiment)}
+              <strong>{data.sentiment.sentiment}</strong>
+              <span className="confidence">
+                {Math.round(data.sentiment.confidence * 100)}% confidence
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="result-card">
-          <h3>
-            <Users size={20} />
-            Key Entities
-          </h3>
-          {data.entities.map((entity, index) => (
-            <div key={index} className="entity-item">
-              <div className="entity-type">{entity.type}</div>
-              <div>{entity.text}</div>
-              <div className="confidence">{Math.round(entity.confidence * 100)}%</div>
-            </div>
-          ))}
-        </div>
+        {data.entities && data.entities.length > 0 && (
+          <div className="result-card">
+            <h3>
+              <Users size={20} />
+              Key Entities
+            </h3>
+            {data.entities.map((entity, index) => (
+              <div key={index} className="entity-item">
+                <div className="entity-type">{entity.type}</div>
+                <div>{entity.text}</div>
+                <div className="confidence">{Math.round(entity.confidence * 100)}%</div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <div className="result-card">
-          <h3>
-            <Key size={20} />
-            Key Phrases
-          </h3>
-          {data.keyPhrases.map((phrase, index) => (
-            <div key={index} className="phrase-item">
-              <div>{phrase.text}</div>
-              <div className="confidence">{Math.round(phrase.confidence * 100)}%</div>
-            </div>
-          ))}
-        </div>
+        {data.keyPhrases && data.keyPhrases.length > 0 && (
+          <div className="result-card">
+            <h3>
+              <Key size={20} />
+              Key Phrases
+            </h3>
+            {data.keyPhrases.map((phrase, index) => (
+              <div key={index} className="phrase-item">
+                <div>{phrase.text}</div>
+                <div className="confidence">{Math.round(phrase.confidence * 100)}%</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
