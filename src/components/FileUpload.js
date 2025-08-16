@@ -7,6 +7,7 @@ const FileUpload = ({ onAnalysisStart, onAnalysisComplete, isAnalyzing, onVersio
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('idle'); // idle, success, error
+  const [jobDescription, setJobDescription] = useState('');
   const fileInputRef = useRef(null);
   const { user } = useUser();
 
@@ -46,7 +47,7 @@ const FileUpload = ({ onAnalysisStart, onAnalysisComplete, isAnalyzing, onVersio
     onAnalysisStart();
     
     try {
-      const analysis = await analyzeResume(selectedFile);
+      const analysis = await analyzeResume(selectedFile, jobDescription);
       onAnalysisComplete(analysis);
       
       // Save resume version after successful analysis
@@ -142,6 +143,16 @@ const FileUpload = ({ onAnalysisStart, onAnalysisComplete, isAnalyzing, onVersio
                 {formatFileSize(selectedFile.size)} • {selectedFile.type.includes('pdf') ? 'PDF Document' : 'Text File'}
               </div>
             </div>
+          </div>
+          <div className="job-description">
+            <label htmlFor="jobDesc">Optional: Paste a job description to tailor the analysis</label>
+            <textarea
+              id="jobDesc"
+              placeholder="Paste the target job description here..."
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              rows={4}
+            />
           </div>
           <button
             className="analyze-btn"

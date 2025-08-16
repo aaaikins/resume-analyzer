@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { ClerkProvider, SignedIn, SignedOut, useUser } from '@clerk/clerk-react';
 import FileUpload from './components/FileUpload';
@@ -6,47 +6,37 @@ import AnalysisResults from './components/AnalysisResults';
 import LoadingAnalysis from './components/LoadingAnalysis';
 import Header from './components/Header';
 import ResumeVersions from './components/ResumeVersions';
+import { getResumeVersions } from './services/awsService';
 
-const publishableKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+const publishableKey =
+  process.env.REACT_APP_CLERK_PUBLISHABLE_KEY ||
+  process.env.VITE_CLERK_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
+  '';
 
 const AppContent = () => {
   const [analysisData, setAnalysisData] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { isLoaded } = useUser();
-  
-  // Sample resume versions data - in a real app, this would come from your backend
-  const [resumeVersions] = useState([
-    {
-      id: 1,
-      name: 'Software Engineer Resume',
-      uploadDate: '2024-01-15',
-      score: 85,
-      atsScore: 78,
-      jobMatch: 92,
-      keywordCount: 24,
-      improvements: ['Added technical skills section', 'Improved formatting for ATS compatibility']
-    },
-    {
-      id: 2,
-      name: 'Updated Resume v2',
-      uploadDate: '2024-01-10',
-      score: 72,
-      atsScore: 65,
-      jobMatch: 78,
-      keywordCount: 18,
-      improvements: ['Enhanced work experience descriptions', 'Added quantifiable achievements']
-    },
-    {
-      id: 3,
-      name: 'Initial Resume',
-      uploadDate: '2024-01-05',
-      score: 58,
-      atsScore: 45,
-      jobMatch: 62,
-      keywordCount: 12,
-      improvements: ['Basic formatting improvements needed', 'Missing key technical skills']
+  const [resumeVersions, setResumeVersions] = useState([]);
+  const { isLoaded, user } = useUser();
+
+  // Load versions dynamically for the signed-in user
+  useEffect(() => {
+    const loadVersions = async () => {
+      if (!user?.id) return;
+      try {
+        const resp = await getResumeVersions(user.id);
+        const list = Array.isArray(resp?.versions) ? resp.versions : [];
+        setResumeVersions(list);
+      } catch (e) {
+        // If the API is not configured, the service returns mock results; keep empty list
+        console.warn('Unable to load resume versions; showing none for now.', e);
+      }
+    };
+    if (isLoaded) {
+      loadVersions();
     }
-  ]);
+  }, [isLoaded, user?.id]);
 
   const handleAnalysisComplete = (data) => {
     setAnalysisData(data);
@@ -59,9 +49,11 @@ const AppContent = () => {
   };
   
   const handleVersionSaved = (newVersion) => {
-    // In a real app, you would refresh the versions from the backend
-    // For now, we'll just log it
-    console.log('New version saved:', newVersion);
+    // Optimistically add the new version to the list
+    setResumeVersions((prev) => [
+      { ...newVersion, id: newVersion.id || Date.now() },
+      ...prev,
+    ]);
   };
 
   if (!isLoaded) {
